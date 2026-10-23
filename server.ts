@@ -109,7 +109,7 @@ const PAGE = `<!doctype html>
   button.delete { background:transparent; color:#b4382c; border-color:transparent; }
   ul { list-style:none; padding:0; margin:0; }
   li { display:flex; align-items:center; gap:12px; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px 14px; margin-bottom:8px; }
-  li .title { flex:1; }
+  li .title { flex:1; } li.done .title { text-decoration:line-through; color:var(--muted); }
   .due { color:var(--muted); font-size:.9rem; }
 </style>
 </head>
