@@ -36,6 +36,9 @@ function getSession(req: Request): { id: string; session: Session; isNew: boolea
   return { id: fresh, session, isNew: true };
 }
 
+// Soonest first, so what's due next is at the top.
+const byDue = (tasks: Task[]) => [...tasks].sort((a, b) => a.due.localeCompare(b.due));
+
 const json = (data: unknown, status = 200) => Response.json(data, { status });
 
 async function handle(req: Request, s: Session): Promise<Response> {
@@ -48,25 +51,25 @@ async function handle(req: Request, s: Session): Promise<Response> {
     return json({ ok: true });
   }
 
-  if (route === "GET /api/tasks") return json(s.tasks);
+  if (route === "GET /api/tasks") return json(byDue(s.tasks));
   if (route === "POST /api/tasks") {
     const { title, due } = (await req.json()) as { title: string; due: string };
     s.tasks.push({ id: s.nextId++, title, due: due || new Date().toISOString().slice(0, 10), done: false });
-    return json(s.tasks, 201);
+    return json(byDue(s.tasks), 201);
   }
   if (req.method === "PATCH" && url.pathname.startsWith("/api/tasks/")) {
     const id = Number(url.pathname.split("/").pop());
     const task = s.tasks.find((t) => t.id === id);
     if (!task) return json({ error: "No such task" }, 404);
     task.done = !task.done;
-    return json(s.tasks);
+    return json(byDue(s.tasks));
   }
   if (req.method === "DELETE" && url.pathname.startsWith("/api/tasks/")) {
     // The list sends the row's position.
     const position = Number(url.pathname.split("/").pop());
     if (!(position >= 0 && position < s.tasks.length)) return json({ error: "No such task" }, 404);
     s.tasks.splice(position, 1);
-    return json(s.tasks);
+    return json(byDue(s.tasks));
   }
 
   if (req.method === "GET" && url.pathname === "/") return new Response(PAGE, { headers: { "content-type": "text/html; charset=utf-8" } });

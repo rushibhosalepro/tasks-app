@@ -1,7 +1,7 @@
 # Tells No Repro about this app. Optional, but it helps the agent match reports to pages.
 app:
   name: Tasks
-  description: A to-do list. Add tasks with a due date, tick them off, delete them.
+  description: A to-do list. Add tasks with a due date, tick them off, delete them. Tasks are listed soonest-due first.
   start: bun run dev
   baseUrl: http://localhost:3000
   ready: /health
