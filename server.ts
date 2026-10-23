@@ -54,7 +54,8 @@ async function handle(req: Request, s: Session): Promise<Response> {
   if (route === "GET /api/tasks") return json(byDue(s.tasks));
   if (route === "POST /api/tasks") {
     const { title, due } = (await req.json()) as { title: string; due: string };
-    s.tasks.push({ id: s.nextId++, title, due: due || new Date().toISOString().slice(0, 10), done: false });
+    if (!title?.trim()) return json({ error: "Give the task a title" }, 400);
+    s.tasks.push({ id: s.nextId++, title: title.trim(), due: due || new Date().toISOString().slice(0, 10), done: false });
     return json(byDue(s.tasks), 201);
   }
   if (req.method === "PATCH" && url.pathname.startsWith("/api/tasks/")) {
