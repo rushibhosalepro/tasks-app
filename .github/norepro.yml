@@ -1,0 +1,16 @@
+# Tells No Repro about this app. Optional, but it helps the agent match reports to pages.
+app:
+  name: Tasks
+  description: A to-do list. Add tasks with a due date, tick them off, delete them.
+  start: bun run dev
+  baseUrl: http://localhost:3000
+  ready: /health
+  reset: POST /__reset
+  pages:
+    - path: /
+      description: The task list (each row has a Done checkbox, the title, the due date and a Delete button) and a form to add a task
+
+# Lets No Repro replay bugs on this repo's own GitHub Actions runner.
+run:
+  install: bun install
+  env: []
